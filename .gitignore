@@ -1,0 +1,31 @@
+# WordPress plugin specific ignores
+.DS_Store
+Thumbs.db
+wp-content/
+node_modules/
+vendor/
+
+# Log files
+logs/
+*.log
+
+# User uploads (except sample files)
+assets/uploads/*
+!assets/uploads/.gitkeep
+
+# IDE and editor files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+
+# Compiled files
+*.min.js
+*.min.css
+
+# Temporary files
+*.tmp
+*.bak
+*~

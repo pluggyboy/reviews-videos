@@ -1,0 +1,570 @@
+/**
+ * Reviews Video Generator Admin CSS
+ */
+
+/* General Styles */
+.rvg-section {
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.rvg-section h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.rvg-form-field {
+    margin-bottom: 15px;
+}
+
+.rvg-form-field label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.rvg-form-field select,
+.rvg-form-field input,
+.rvg-form-field textarea {
+    width: 100%;
+}
+
+.rvg-form-actions {
+    margin-top: 20px;
+}
+
+.rvg-star-rating {
+    color: #FFD700;
+}
+
+/* Dashboard Styles */
+.rvg-dashboard-header {
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+}
+
+.rvg-dashboard-cards {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.rvg-card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.rvg-card-icon {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    color: #0073aa;
+}
+
+.rvg-card h3 {
+    margin-top: 0;
+}
+
+.rvg-card p {
+    flex-grow: 1;
+}
+
+.rvg-dashboard-getting-started {
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.rvg-dashboard-getting-started ol {
+    margin-left: 20px;
+}
+
+.rvg-dashboard-getting-started li {
+    margin-bottom: 10px;
+}
+
+/* Reviews Management Styles */
+.rvg-reviews-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.rvg-form {
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+}
+
+.rvg-form h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.rvg-reviews-filters {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.rvg-reviews-filters select,
+.rvg-reviews-filters input {
+    max-width: 200px;
+}
+
+.rvg-review-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.rvg-review-preview {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.rvg-review-text {
+    margin-bottom: 10px;
+}
+
+.rvg-review-author {
+    font-style: italic;
+    text-align: right;
+}
+
+/* Video Creation Styles */
+.rvg-create-video-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.rvg-create-video-container {
+    display: flex;
+    gap: 30px;
+}
+
+.rvg-create-video-controls {
+    flex: 1;
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.rvg-create-video-preview {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.rvg-background-video-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.rvg-background-video-item {
+    cursor: pointer;
+    text-align: center;
+    border: 2px solid transparent;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.rvg-background-video-item.selected {
+    border-color: #0073aa;
+    background: #f0f6fc;
+}
+
+.rvg-background-video-thumbnail {
+    height: 60px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 3px;
+    margin-bottom: 5px;
+}
+
+.rvg-color-options {
+    display: flex;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.rvg-color-option {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    font-weight: bold;
+}
+
+.rvg-color-option.selected {
+    border-color: #0073aa;
+}
+
+.rvg-aspect-ratio-options {
+    display: flex;
+    gap: 15px;
+}
+
+.rvg-aspect-ratio-option {
+    text-align: center;
+    cursor: pointer;
+}
+
+.rvg-aspect-ratio-option.selected .rvg-aspect-ratio-preview {
+    border-color: #0073aa;
+    background-color: #f0f6fc;
+}
+
+.rvg-aspect-ratio-preview {
+    width: 60px;
+    height: 60px;
+    border: 2px solid #ddd;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rvg-aspect-ratio-preview.ratio-16-9 {
+    width: 60px;
+    height: 34px;
+}
+
+.rvg-aspect-ratio-preview.ratio-1-1 {
+    width: 45px;
+    height: 45px;
+}
+
+.rvg-aspect-ratio-preview.ratio-9-16 {
+    width: 34px;
+    height: 60px;
+}
+
+.rvg-video-preview-container {
+    width: 100%;
+    max-width: 500px;
+    position: relative;
+    margin-bottom: 10px;
+    background-color: #000;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.ratio-16-9 {
+    position: relative;
+    width: 100%;
+}
+
+.ratio-16-9::before {
+    content: "";
+    display: block;
+    padding-top: 56.25%; /* 9/16 = 0.5625 */
+}
+
+.ratio-1-1 {
+    position: relative;
+    width: 100%;
+}
+
+.ratio-1-1::before {
+    content: "";
+    display: block;
+    padding-top: 100%; /* 1/1 = 1 */
+}
+
+.ratio-9-16 {
+    position: relative;
+    width: 100%;
+}
+
+.ratio-9-16::before {
+    content: "";
+    display: block;
+    padding-top: 177.78%; /* 16/9 = 1.7778 */
+}
+
+.rvg-video-preview-placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rvg-video-preview-content {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    color: #fff;
+    text-align: center;
+}
+
+.rvg-preview-stars {
+    color: #FFD700;
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+.rvg-preview-text {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    line-height: 1.4;
+}
+
+.rvg-preview-author {
+    font-style: italic;
+    align-self: flex-end;
+    margin-right: 20px;
+}
+
+.rvg-preview-note {
+    color: #666;
+    font-style: italic;
+    text-align: center;
+}
+
+/* Videos List Styles */
+.rvg-videos-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.rvg-videos-filters {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.rvg-videos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.rvg-video-card {
+    background: #fff;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    overflow: hidden;
+}
+
+.rvg-video-thumbnail {
+    position: relative;
+    overflow: hidden;
+    background-color: #000;
+}
+
+.rvg-video-thumbnail img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.rvg-video-play {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transition: opacity 0.3s;
+    cursor: pointer;
+}
+
+.rvg-video-play .dashicons {
+    color: #fff;
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    padding: 10px;
+}
+
+.rvg-video-thumbnail:hover .rvg-video-play {
+    opacity: 1;
+}
+
+.rvg-video-info {
+    padding: 15px;
+}
+
+.rvg-video-info h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.rvg-video-meta {
+    display: flex;
+    justify-content: space-between;
+    color: #666;
+    font-size: 0.9em;
+    margin-bottom: 10px;
+}
+
+.rvg-video-review {
+    font-style: italic;
+    margin-bottom: 5px;
+}
+
+.rvg-video-author {
+    text-align: right;
+    font-weight: 600;
+}
+
+.rvg-video-actions {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 15px 15px;
+}
+
+.rvg-no-videos {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 50px 20px;
+    background: #fff;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+/* Modal Styles */
+.rvg-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rvg-modal-content {
+    background-color: #fff;
+    border-radius: 5px;
+    max-width: 800px;
+    width: 90%;
+}
+
+.rvg-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.rvg-modal-header h2 {
+    margin: 0;
+}
+
+.rvg-close-modal {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+}
+
+.rvg-progress {
+    height: 10px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    margin: 20px 0;
+    overflow: hidden;
+}
+
+.rvg-progress-bar {
+    height: 100%;
+    background-color: #0073aa;
+    width: 0;
+    transition: width 0.3s;
+}
+
+.rvg-progress-status {
+    font-weight: 600;
+}
+
+.rvg-progress-note {
+    color: #666;
+    margin-top: 20px;
+}
+
+.rvg-video-container {
+    padding: 20px;
+}
+
+.rvg-video-container video {
+    width: 100%;
+    display: block;
+    border-radius: 5px;
+}
+
+.rvg-modal-actions {
+    padding: 0 20px 20px;
+    text-align: center;
+}
+
+/* Responsive Styles */
+@media (max-width: 782px) {
+    .rvg-dashboard-cards {
+        flex-direction: column;
+    }
+    
+    .rvg-create-video-container {
+        flex-direction: column;
+    }
+    
+    .rvg-background-video-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .rvg-videos-grid {
+        grid-template-columns: 1fr;
+    }
+}
