@@ -67,11 +67,15 @@ class Reviews_Video_Generator_Admin {
             'background_video' => isset($_POST['background_video']) ? esc_url_raw($_POST['background_video']) : '',
             'text_color' => isset($_POST['text_color']) ? sanitize_hex_color($_POST['text_color']) : '#FFFFFF',
             'font' => isset($_POST['font']) ? sanitize_text_field($_POST['font']) : 'Open Sans',
+            'font_size' => isset($_POST['font_size']) ? intval($_POST['font_size']) : 30,
             'aspect_ratio' => isset($_POST['aspect_ratio']) ? sanitize_text_field($_POST['aspect_ratio']) : '16:9'
         );
         
-        // Log the background video URL for debugging
-        Reviews_Video_Generator_Debug::debug('Background video URL received', [
+        // Log the font size and background video URL for debugging
+        Reviews_Video_Generator_Debug::debug('Video creation data received', [
+            'font_size' => $video_data['font_size'],
+            'font_size_raw' => isset($_POST['font_size']) ? $_POST['font_size'] : 'not set',
+            'font_size_type' => isset($_POST['font_size']) ? gettype($_POST['font_size']) : 'not set',
             'url' => $video_data['background_video']
         ]);
         

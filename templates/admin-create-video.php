@@ -163,6 +163,11 @@
                         </div>
                         
                         <div class="rvg-form-field">
+                            <label for="rvg-font-size"><?php _e('Font Size (px)', 'reviews-video-generator'); ?></label>
+                            <input type="number" id="rvg-font-size" name="font_size" min="10" max="100" value="30" class="regular-text">
+                        </div>
+                        
+                        <div class="rvg-form-field">
                             <label for="rvg-text-color"><?php _e('Text Color', 'reviews-video-generator'); ?></label>
                             <div class="rvg-color-options">
                                 <div class="rvg-color-option selected" data-color="#FFFFFF" style="background-color: #FFFFFF; color: #000000;">Aa</div>
@@ -246,6 +251,7 @@
     <!-- Completed Modal -->
     <div id="rvg-completed-modal" class="rvg-modal" style="display: none;">
         <div class="rvg-modal-content">
+            <span class="rvg-modal-close">&times;</span>
             <h2><?php _e('Your Video is Ready!', 'reviews-video-generator'); ?></h2>
             <div class="rvg-video-container">
                 <video id="rvg-completed-video" controls>
@@ -413,6 +419,11 @@
         border-color: #0073aa;
     }
     
+    /* Font size input styling */
+    #rvg-font-size {
+        width: 80px;
+    }
+    
     .rvg-aspect-ratio-options {
         display: flex;
         gap: 15px;
@@ -521,6 +532,7 @@
         padding: 20px;
         color: #fff;
         text-align: center;
+        box-sizing: border-box;
     }
     
     .rvg-preview-stars {
@@ -534,6 +546,8 @@
         font-weight: 600;
         margin-bottom: 15px;
         line-height: 1.4;
+        max-width: 80%;
+        word-wrap: break-word;
     }
     
     .rvg-preview-author {
@@ -574,6 +588,22 @@
         max-width: 600px;
         width: 90%;
         text-align: center;
+        position: relative;
+    }
+    
+    .rvg-modal-close {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 24px;
+        font-weight: bold;
+        color: #666;
+        cursor: pointer;
+        transition: color 0.2s;
+    }
+    
+    .rvg-modal-close:hover {
+        color: #000;
     }
     
     .rvg-progress {
@@ -699,6 +729,8 @@ jQuery(document).ready(function($) {
         // In a real implementation, we would update the preview font
     });
     
+    // No need for font size input handler with a simple number input
+    
     // Handle review selection (when no review was pre-selected)
     $('#rvg-select-review').on('change', function() {
         const reviewId = $(this).val();
@@ -804,6 +836,7 @@ jQuery(document).ready(function($) {
             background_video: backgroundVideo,
             text_color: $('#rvg-text-color').val(),
             font: $('#rvg-font').val(),
+            font_size: $('#rvg-font-size').val(),
             aspect_ratio: $('#rvg-aspect-ratio').val()
         };
         
@@ -836,6 +869,7 @@ jQuery(document).ready(function($) {
                 background_video: formData.background_video,
                 text_color: formData.text_color,
                 font: formData.font,
+                font_size: formData.font_size,
                 aspect_ratio: formData.aspect_ratio
             },
             beforeSend: function() {
@@ -897,6 +931,22 @@ jQuery(document).ready(function($) {
         // Show the error message
         alert(errorMessage);
     }
+    
+    // Handle modal close button and outside click
+    $(document).ready(function() {
+        // Close button click
+        $(document).on('click', '.rvg-modal-close', function() {
+            $(this).closest('.rvg-modal').hide();
+        });
+        
+        // Click outside modal content
+        $(document).on('click', '.rvg-modal', function(e) {
+            // Close the modal when clicking outside the modal content
+            if (e.target === this) {
+                $(this).hide();
+            }
+        });
+    });
     
     /**
      * Poll for video status

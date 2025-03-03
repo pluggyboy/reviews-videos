@@ -87,17 +87,44 @@ class Reviews_Video_Generator_Shotstack_API {
             // Prepare the video edit
             $edit = $this->prepare_video_edit($video_data);
             
+            // Log the font size in the edit object
+            $font_sizes = [];
+            if (isset($edit['timeline']) && isset($edit['timeline']['tracks'])) {
+                foreach ($edit['timeline']['tracks'] as $track_index => $track) {
+                    if (isset($track['clips'])) {
+                        foreach ($track['clips'] as $clip_index => $clip) {
+                            if (isset($clip['asset']) && isset($clip['asset']['type']) && $clip['asset']['type'] === 'text' && isset($clip['asset']['font']) && isset($clip['asset']['font']['size'])) {
+                                $font_sizes[] = [
+                                    'track_index' => $track_index,
+                                    'clip_index' => $clip_index,
+                                    'font_size' => $clip['asset']['font']['size'],
+                                    'text' => $clip['asset']['text']
+                                ];
+                            }
+                        }
+                    }
+                }
+            }
+            
             Reviews_Video_Generator_Debug::debug('Prepared video edit for Shotstack API', [
-                'edit' => $edit
+                'edit' => $edit,
+                'font_sizes_in_edit' => $font_sizes
             ]);
 
             // Make the API request
+            $json_body = json_encode($edit);
+            
+            // Log the actual JSON being sent to the API
+            Reviews_Video_Generator_Debug::debug('JSON payload being sent to Shotstack API', [
+                'json_body' => $json_body
+            ]);
+            
             $request_args = array(
                 'headers' => array(
                     'Content-Type' => 'application/json',
                     'x-api-key' => $this->api_key
                 ),
-                'body' => json_encode($edit),
+                'body' => $json_body,
                 'timeout' => 30
             );
             
@@ -287,6 +314,178 @@ class Reviews_Video_Generator_Shotstack_API {
     }
 
     /**
+     * Get text element positions and styling for the video.
+     *
+     * @since    0.1.0
+     * @param    array    $video_data    The data for the video.
+     * @param    array    $dimensions    The video dimensions.
+     * @return   array                   Array of clip configurations for text elements.
+     */
+    private function get_text_element_configs($video_data, $dimensions) {
+        // Extract relevant data
+        $review_text = isset($video_data['review_text']) ? $video_data['review_text'] : '';
+        $author_name = isset($video_data['author_name']) ? $video_data['author_name'] : '';
+        $rating = isset($video_data['rating']) ? intval($video_data['rating']) : 5;
+        $text_color = isset($video_data['text_color']) ? $video_data['text_color'] : '#FFFFFF';
+        $font = isset($video_data['font']) ? $video_data['font'] : 'Open Sans';
+        $font_size = isset($video_data['font_size']) ? intval($video_data['font_size']) : 30;
+        
+        // Log the font size for debugging
+        Reviews_Video_Generator_Debug::debug('Font size in get_text_element_configs - INITIAL', [
+            'font_size' => $font_size,
+            'video_data_font_size' => isset($video_data['font_size']) ? $video_data['font_size'] : 'not set',
+            'video_data' => $video_data,
+            'raw_font_size_type' => gettype($video_data['font_size']),
+            'raw_font_size_value' => $video_data['font_size']
+        ]);
+        
+        // Calculate proportional widths based on video dimensions
+        $video_width = $dimensions['width'];
+        $video_height = $dimensions['height'];
+        
+        // Set text widths as a percentage of video width with margins
+        $review_text_width = intval($video_width * 0.8); // 80% of video width
+        $star_rating_width = intval($video_width * 0.6); // 60% of video width
+        $author_name_width = intval($video_width * 0.6); // 60% of video width
+        
+        // Prepare the star rating text
+        $star_rating = $rating . '/5 Rating';
+        
+        // Use the exact same font size for all elements
+        $star_rating_font_size = $font_size;
+        $review_text_font_size = $font_size;
+        $author_name_font_size = $font_size;
+        
+        Reviews_Video_Generator_Debug::debug('Font sizes after assignment', [
+            'star_rating_font_size' => $star_rating_font_size,
+            'review_text_font_size' => $review_text_font_size,
+            'author_name_font_size' => $author_name_font_size
+        ]);
+        
+        // Create clip configurations for each text element
+        $clips = array(
+            // Star rating at the top
+            array(
+                'asset' => array(
+                    'type' => 'text',
+                    'text' => $star_rating,
+                    'font' => array(
+                        'family' => 'Arial',
+                        'color' => '#FFD700', // Gold color for stars
+                        'size' => $star_rating_font_size
+                    ),
+                    'alignment' => array(
+                        'horizontal' => 'center'
+                    ),
+                    'width' => $star_rating_width,
+                    'height' => 100
+                ),
+                'start' => 1,
+                'length' => 9,
+                'transition' => array(
+                    'in' => 'fade',
+                    'out' => 'fade'
+                ),
+                'fit' => 'none',
+                'scale' => 1,
+                'offset' => array(
+                    'x' => 0,
+                    'y' => 0.3 // Positioned at the top third
+                ),
+                'position' => 'center',
+                'effect' => 'zoomIn'
+            ),
+            
+            // Review text in the middle
+            array(
+                'asset' => array(
+                    'type' => 'text',
+                    'text' => '"' . $review_text . '"',
+                    'font' => array(
+                        'family' => 'Arial',
+                        'color' => $text_color,
+                        'size' => $review_text_font_size
+                    ),
+                    'alignment' => array(
+                        'horizontal' => 'center'
+                    ),
+                    'width' => $review_text_width,
+                    'height' => 212
+                ),
+                'start' => 2,
+                'length' => 7,
+                'transition' => array(
+                    'in' => 'fade',
+                    'out' => 'fade'
+                ),
+                'fit' => 'none',
+                'scale' => 1,
+                'offset' => array(
+                    'x' => 0,
+                    'y' => 0 // Centered vertically
+                ),
+                'position' => 'center',
+                'effect' => 'zoomIn'
+            ),
+            
+            // Author name at the bottom
+            array(
+                'asset' => array(
+                    'type' => 'text',
+                    'text' => '- ' . $author_name,
+                    'font' => array(
+                        'family' => 'Arial',
+                        'color' => $text_color,
+                        'size' => $author_name_font_size
+                    ),
+                    'alignment' => array(
+                        'horizontal' => 'center'
+                    ),
+                    'width' => $author_name_width,
+                    'height' => 100
+                ),
+                'start' => 3,
+                'length' => 6,
+                'transition' => array(
+                    'in' => 'fade',
+                    'out' => 'fade'
+                ),
+                'fit' => 'none',
+                'scale' => 1,
+                'offset' => array(
+                    'x' => 0,
+                    'y' => -0.3 // Positioned at the bottom third
+                ),
+                'position' => 'center',
+                'effect' => 'zoomIn'
+            )
+        );
+        
+        // Log the font sizes in the clips array
+        $font_sizes_in_clips = [];
+        foreach ($clips as $index => $clip) {
+            if (isset($clip['asset']) && isset($clip['asset']['font']) && isset($clip['asset']['font']['size'])) {
+                $font_sizes_in_clips[] = [
+                    'clip_index' => $index,
+                    'text' => $clip['asset']['text'],
+                    'font_size' => $clip['asset']['font']['size']
+                ];
+            }
+        }
+        
+        Reviews_Video_Generator_Debug::debug('Font sizes in clips before returning', [
+            'font_sizes_in_clips' => $font_sizes_in_clips
+        ]);
+        
+        // Log the entire clips array for debugging
+        Reviews_Video_Generator_Debug::debug('Final clips array in get_text_element_configs', [
+            'clips' => $clips
+        ]);
+        
+        return $clips;
+    }
+
+    /**
      * Prepare the video edit data for the Shotstack API.
      *
      * @since    0.1.0
@@ -301,7 +500,17 @@ class Reviews_Video_Generator_Shotstack_API {
         $background_video = isset($video_data['background_video']) ? $video_data['background_video'] : '';
         $text_color = isset($video_data['text_color']) ? $video_data['text_color'] : '#FFFFFF';
         $font = isset($video_data['font']) ? $video_data['font'] : 'Open Sans';
+        $font_size = isset($video_data['font_size']) ? intval($video_data['font_size']) : 30;
         $aspect_ratio = isset($video_data['aspect_ratio']) ? $video_data['aspect_ratio'] : '16:9';
+        
+        // Log the font size for debugging
+        Reviews_Video_Generator_Debug::debug('Font size in prepare_video_edit - INITIAL', [
+            'font_size' => $font_size,
+            'video_data_font_size' => isset($video_data['font_size']) ? $video_data['font_size'] : 'not set',
+            'video_data' => $video_data,
+            'raw_font_size_type' => isset($video_data['font_size']) ? gettype($video_data['font_size']) : 'not set',
+            'raw_font_size_value' => isset($video_data['font_size']) ? $video_data['font_size'] : 'not set'
+        ]);
         
         // Check if the background video URL is local or not from a trusted domain
         $use_fallback = false;
@@ -398,6 +607,52 @@ class Reviews_Video_Generator_Shotstack_API {
                 break;
         }
         
+        // Get text element configurations
+        $text_clips = $this->get_text_element_configs($video_data, $output_dimensions);
+        
+        // Log the text clips after getting them from get_text_element_configs
+        $font_sizes_after_get_configs = [];
+        foreach ($text_clips as $index => $clip) {
+            if (isset($clip['asset']) && isset($clip['asset']['font']) && isset($clip['asset']['font']['size'])) {
+                $font_sizes_after_get_configs[] = [
+                    'clip_index' => $index,
+                    'text' => $clip['asset']['text'],
+                    'font_size' => $clip['asset']['font']['size']
+                ];
+            }
+        }
+        
+        Reviews_Video_Generator_Debug::debug('Font sizes after get_text_element_configs', [
+            'font_sizes_after_get_configs' => $font_sizes_after_get_configs
+        ]);
+        
+        // Create tracks for each text element
+        $text_tracks = array();
+        foreach ($text_clips as $clip) {
+            $text_tracks[] = array(
+                'clips' => array($clip)
+            );
+        }
+        
+        // Log the text tracks after creating them
+        $font_sizes_in_tracks = [];
+        foreach ($text_tracks as $track_index => $track) {
+            foreach ($track['clips'] as $clip_index => $clip) {
+                if (isset($clip['asset']) && isset($clip['asset']['font']) && isset($clip['asset']['font']['size'])) {
+                    $font_sizes_in_tracks[] = [
+                        'track_index' => $track_index,
+                        'clip_index' => $clip_index,
+                        'text' => $clip['asset']['text'],
+                        'font_size' => $clip['asset']['font']['size']
+                    ];
+                }
+            }
+        }
+        
+        Reviews_Video_Generator_Debug::debug('Font sizes in tracks after creation', [
+            'font_sizes_in_tracks' => $font_sizes_in_tracks
+        ]);
+        
         // Create the edit object using the structure from the working example
         $edit = array(
             'timeline' => array(
@@ -407,131 +662,29 @@ class Reviews_Video_Generator_Shotstack_API {
                     )
                 ),
                 'background' => '#000000',
-                'tracks' => array(
-                    // Review text track (first track for proper z-index)
+                'tracks' => array_merge(
+                    $text_tracks,
                     array(
-                        'clips' => array(
-                            array(
-                                'asset' => array(
-                                    'type' => 'text',
-                                    'text' => '"' . $review_text . '"',
-                                    'font' => array(
-                                        'family' => 'Arial',
-                                        'color' => $text_color,
-                                        'size' => 70
+                        // Background video track (after text tracks for proper z-index)
+                        array(
+                            'clips' => array(
+                                array(
+                                    'asset' => array(
+                                        'type' => 'video',
+                                        'src' => $background_video,
+                                        'volume' => 1
                                     ),
-                                    'alignment' => array(
-                                        'horizontal' => 'center'
+                                    'start' => 0,
+                                    'length' => 10,
+                                    'transition' => array(
+                                        'in' => 'fade',
+                                        'out' => 'fade'
                                     ),
-                                    'width' => 720,
-                                    'height' => 212
-                                ),
-                                'start' => 2,
-                                'length' => 7,
-                                'transition' => array(
-                                    'in' => 'fade',
-                                    'out' => 'fade'
-                                ),
-                                'fit' => 'none',
-                                'scale' => 1,
-                                'offset' => array(
-                                    'x' => 0,
-                                    'y' => 0
-                                ),
-                                'position' => 'center',
-                                'effect' => 'zoomIn'
-                            )
-                        )
-                    ),
-                    // Star rating track
-                    array(
-                        'clips' => array(
-                            array(
-                                'asset' => array(
-                                    'type' => 'text',
-                                    'text' => $star_rating,
-                                    'font' => array(
-                                        'family' => 'Arial',
-                                        'color' => '#FFD700',
-                                        'size' => 60
-                                    ),
-                                    'alignment' => array(
-                                        'horizontal' => 'left'
-                                    ),
-                                    'width' => 300,
-                                    'height' => 100
-                                ),
-                                'start' => 1,
-                                'length' => 9,
-                                'transition' => array(
-                                    'in' => 'fade',
-                                    'out' => 'fade'
-                                ),
-                                'fit' => 'none',
-                                'scale' => 1,
-                                'offset' => array(
-                                    'x' => 0.1,
-                                    'y' => 0.3
-                                ),
-                                'position' => 'bottomLeft',
-                                'effect' => 'zoomIn'
-                            )
-                        )
-                    ),
-                    // Author name track
-                    array(
-                        'clips' => array(
-                            array(
-                                'asset' => array(
-                                    'type' => 'text',
-                                    'text' => '- ' . $author_name,
-                                    'font' => array(
-                                        'family' => 'Arial',
-                                        'color' => $text_color,
-                                        'size' => 50
-                                    ),
-                                    'alignment' => array(
-                                        'horizontal' => 'right'
-                                    ),
-                                    'width' => 400,
-                                    'height' => 100
-                                ),
-                                'start' => 3,
-                                'length' => 6,
-                                'transition' => array(
-                                    'in' => 'fade',
-                                    'out' => 'fade'
-                                ),
-                                'fit' => 'none',
-                                'scale' => 1,
-                                'offset' => array(
-                                    'x' => 0.1,
-                                    'y' => 0.1
-                                ),
-                                'position' => 'bottomRight',
-                                'effect' => 'zoomIn'
-                            )
-                        )
-                    ),
-                    // Background video track (after text tracks for proper z-index)
-                    array(
-                        'clips' => array(
-                            array(
-                                'asset' => array(
-                                    'type' => 'video',
-                                    'src' => $background_video,
-                                    'volume' => 1
-                                ),
-                                'start' => 0,
-                                'length' => 10,
-                                'transition' => array(
-                                    'in' => 'fade',
-                                    'out' => 'fade'
-                                ),
-                                'position' => 'center',
-                                'scale' => 1,
-                                'effect' => 'zoomIn',
-                                'filter' => 'darken'
+                                    'position' => 'center',
+                                    'scale' => 1,
+                                    'effect' => 'zoomIn',
+                                    'filter' => 'darken'
+                                )
                             )
                         )
                     )
@@ -543,6 +696,29 @@ class Reviews_Video_Generator_Shotstack_API {
                 'size' => $output_dimensions
             )
         );
+        
+        // Log the final edit object before returning
+        $font_sizes_in_final_edit = [];
+        if (isset($edit['timeline']) && isset($edit['timeline']['tracks'])) {
+            foreach ($edit['timeline']['tracks'] as $track_index => $track) {
+                if (isset($track['clips'])) {
+                    foreach ($track['clips'] as $clip_index => $clip) {
+                        if (isset($clip['asset']) && isset($clip['asset']['type']) && $clip['asset']['type'] === 'text' && isset($clip['asset']['font']) && isset($clip['asset']['font']['size'])) {
+                            $font_sizes_in_final_edit[] = [
+                                'track_index' => $track_index,
+                                'clip_index' => $clip_index,
+                                'text' => $clip['asset']['text'],
+                                'font_size' => $clip['asset']['font']['size']
+                            ];
+                        }
+                    }
+                }
+            }
+        }
+        
+        Reviews_Video_Generator_Debug::debug('Font sizes in final edit object', [
+            'font_sizes_in_final_edit' => $font_sizes_in_final_edit
+        ]);
         
         return $edit;
     }

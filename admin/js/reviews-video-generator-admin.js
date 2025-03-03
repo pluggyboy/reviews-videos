@@ -321,6 +321,7 @@
                 background_video: backgroundVideo,
                 text_color: $('#rvg-text-color').val(),
                 font: $('#rvg-font').val(),
+                font_size: $('#rvg-font-size').val(),
                 aspect_ratio: $('#rvg-aspect-ratio').val()
             };
             
@@ -356,7 +357,7 @@
         
         // Send AJAX request to create video
         $.ajax({
-            url: rvg_admin_data.ajax_url,
+            url: ajaxurl,
             type: 'POST',
             data: {
                 action: 'rvg_create_video',
@@ -368,6 +369,7 @@
                 background_video: formData.background_video,
                 text_color: formData.text_color,
                 font: formData.font,
+                font_size: formData.font_size, // Add the missing font_size parameter
                 aspect_ratio: formData.aspect_ratio
             },
             success: function(response) {
