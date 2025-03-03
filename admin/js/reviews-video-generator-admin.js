@@ -369,8 +369,21 @@
                 background_video: formData.background_video,
                 text_color: formData.text_color,
                 font: formData.font,
-                font_size: formData.font_size, // Add the missing font_size parameter
-                aspect_ratio: formData.aspect_ratio
+                font_size: formData.font_size,
+                aspect_ratio: formData.aspect_ratio,
+                // Add the new granular text styling parameters
+                rating_font_size: $('#rvg-rating-font-size').val(),
+                rating_text_color: $('#rvg-rating-text-color').val(),
+                rating_position_x: $('#rvg-rating-position-x').val(),
+                rating_position_y: $('#rvg-rating-position-y').val(),
+                review_font_size: $('#rvg-review-font-size').val(),
+                review_text_color: $('#rvg-review-text-color').val(),
+                review_position_x: $('#rvg-review-position-x').val(),
+                review_position_y: $('#rvg-review-position-y').val(),
+                reviewer_font_size: $('#rvg-reviewer-font-size').val(),
+                reviewer_text_color: $('#rvg-reviewer-text-color').val(),
+                reviewer_position_x: $('#rvg-reviewer-position-x').val(),
+                reviewer_position_y: $('#rvg-reviewer-position-y').val()
             },
             success: function(response) {
                 console.log('Create video response:', response);

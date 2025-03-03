@@ -326,17 +326,45 @@ class Reviews_Video_Generator_Shotstack_API {
         $review_text = isset($video_data['review_text']) ? $video_data['review_text'] : '';
         $author_name = isset($video_data['author_name']) ? $video_data['author_name'] : '';
         $rating = isset($video_data['rating']) ? intval($video_data['rating']) : 5;
-        $text_color = isset($video_data['text_color']) ? $video_data['text_color'] : '#FFFFFF';
         $font = isset($video_data['font']) ? $video_data['font'] : 'Open Sans';
-        $font_size = isset($video_data['font_size']) ? intval($video_data['font_size']) : 30;
         
-        // Log the font size for debugging
-        Reviews_Video_Generator_Debug::debug('Font size in get_text_element_configs - INITIAL', [
-            'font_size' => $font_size,
-            'video_data_font_size' => isset($video_data['font_size']) ? $video_data['font_size'] : 'not set',
-            'video_data' => $video_data,
-            'raw_font_size_type' => gettype($video_data['font_size']),
-            'raw_font_size_value' => $video_data['font_size']
+        // Extract individual text element settings
+        // Rating text style
+        $rating_font_size = isset($video_data['rating_font_size']) ? intval($video_data['rating_font_size']) : 30;
+        $rating_text_color = isset($video_data['rating_text_color']) ? $video_data['rating_text_color'] : '#FFD700';
+        $rating_position_x = isset($video_data['rating_position_x']) ? floatval($video_data['rating_position_x']) : 0;
+        $rating_position_y = isset($video_data['rating_position_y']) ? floatval($video_data['rating_position_y']) : 0.3;
+        
+        // Review text style
+        $review_font_size = isset($video_data['review_font_size']) ? intval($video_data['review_font_size']) : 30;
+        $review_text_color = isset($video_data['review_text_color']) ? $video_data['review_text_color'] : '#FFFFFF';
+        $review_position_x = isset($video_data['review_position_x']) ? floatval($video_data['review_position_x']) : 0;
+        $review_position_y = isset($video_data['review_position_y']) ? floatval($video_data['review_position_y']) : 0;
+        
+        // Reviewer text style
+        $reviewer_font_size = isset($video_data['reviewer_font_size']) ? intval($video_data['reviewer_font_size']) : 30;
+        $reviewer_text_color = isset($video_data['reviewer_text_color']) ? $video_data['reviewer_text_color'] : '#FFFFFF';
+        $reviewer_position_x = isset($video_data['reviewer_position_x']) ? floatval($video_data['reviewer_position_x']) : 0;
+        $reviewer_position_y = isset($video_data['reviewer_position_y']) ? floatval($video_data['reviewer_position_y']) : -0.3;
+        
+        // For backward compatibility
+        if (isset($video_data['text_color']) && !isset($video_data['review_text_color'])) {
+            $review_text_color = $video_data['text_color'];
+            $reviewer_text_color = $video_data['text_color'];
+        }
+        
+        if (isset($video_data['font_size']) && !isset($video_data['rating_font_size'])) {
+            $rating_font_size = intval($video_data['font_size']);
+            $review_font_size = intval($video_data['font_size']);
+            $reviewer_font_size = intval($video_data['font_size']);
+        }
+        
+        // Log the font sizes for debugging
+        Reviews_Video_Generator_Debug::debug('Font sizes in get_text_element_configs', [
+            'rating_font_size' => $rating_font_size,
+            'review_font_size' => $review_font_size,
+            'reviewer_font_size' => $reviewer_font_size,
+            'video_data' => $video_data
         ]);
         
         // Calculate proportional widths based on video dimensions
@@ -351,28 +379,17 @@ class Reviews_Video_Generator_Shotstack_API {
         // Prepare the star rating text
         $star_rating = $rating . '/5 Rating';
         
-        // Use the exact same font size for all elements
-        $star_rating_font_size = $font_size;
-        $review_text_font_size = $font_size;
-        $author_name_font_size = $font_size;
-        
-        Reviews_Video_Generator_Debug::debug('Font sizes after assignment', [
-            'star_rating_font_size' => $star_rating_font_size,
-            'review_text_font_size' => $review_text_font_size,
-            'author_name_font_size' => $author_name_font_size
-        ]);
-        
         // Create clip configurations for each text element
         $clips = array(
-            // Star rating at the top
+            // Star rating
             array(
                 'asset' => array(
                     'type' => 'text',
                     'text' => $star_rating,
                     'font' => array(
                         'family' => 'Arial',
-                        'color' => '#FFD700', // Gold color for stars
-                        'size' => $star_rating_font_size
+                        'color' => $rating_text_color,
+                        'size' => $rating_font_size
                     ),
                     'alignment' => array(
                         'horizontal' => 'center'
@@ -389,22 +406,22 @@ class Reviews_Video_Generator_Shotstack_API {
                 'fit' => 'none',
                 'scale' => 1,
                 'offset' => array(
-                    'x' => 0,
-                    'y' => 0.3 // Positioned at the top third
+                    'x' => $rating_position_x,
+                    'y' => $rating_position_y
                 ),
                 'position' => 'center',
                 'effect' => 'zoomIn'
             ),
             
-            // Review text in the middle
+            // Review text
             array(
                 'asset' => array(
                     'type' => 'text',
                     'text' => '"' . $review_text . '"',
                     'font' => array(
                         'family' => 'Arial',
-                        'color' => $text_color,
-                        'size' => $review_text_font_size
+                        'color' => $review_text_color,
+                        'size' => $review_font_size
                     ),
                     'alignment' => array(
                         'horizontal' => 'center'
@@ -421,22 +438,22 @@ class Reviews_Video_Generator_Shotstack_API {
                 'fit' => 'none',
                 'scale' => 1,
                 'offset' => array(
-                    'x' => 0,
-                    'y' => 0 // Centered vertically
+                    'x' => $review_position_x,
+                    'y' => $review_position_y
                 ),
                 'position' => 'center',
                 'effect' => 'zoomIn'
             ),
             
-            // Author name at the bottom
+            // Author name
             array(
                 'asset' => array(
                     'type' => 'text',
                     'text' => '- ' . $author_name,
                     'font' => array(
                         'family' => 'Arial',
-                        'color' => $text_color,
-                        'size' => $author_name_font_size
+                        'color' => $reviewer_text_color,
+                        'size' => $reviewer_font_size
                     ),
                     'alignment' => array(
                         'horizontal' => 'center'
@@ -453,8 +470,8 @@ class Reviews_Video_Generator_Shotstack_API {
                 'fit' => 'none',
                 'scale' => 1,
                 'offset' => array(
-                    'x' => 0,
-                    'y' => -0.3 // Positioned at the bottom third
+                    'x' => $reviewer_position_x,
+                    'y' => $reviewer_position_y
                 ),
                 'position' => 'center',
                 'effect' => 'zoomIn'

@@ -65,10 +65,30 @@ class Reviews_Video_Generator_Admin {
             'rating' => isset($_POST['rating']) ? intval($_POST['rating']) : 5,
             'review_text' => isset($_POST['review_text']) ? sanitize_textarea_field($_POST['review_text']) : '',
             'background_video' => isset($_POST['background_video']) ? esc_url_raw($_POST['background_video']) : '',
-            'text_color' => isset($_POST['text_color']) ? sanitize_hex_color($_POST['text_color']) : '#FFFFFF',
             'font' => isset($_POST['font']) ? sanitize_text_field($_POST['font']) : 'Open Sans',
+            'aspect_ratio' => isset($_POST['aspect_ratio']) ? sanitize_text_field($_POST['aspect_ratio']) : '16:9',
+            
+            // For backward compatibility
+            'text_color' => isset($_POST['text_color']) ? sanitize_hex_color($_POST['text_color']) : '#FFFFFF',
             'font_size' => isset($_POST['font_size']) ? intval($_POST['font_size']) : 30,
-            'aspect_ratio' => isset($_POST['aspect_ratio']) ? sanitize_text_field($_POST['aspect_ratio']) : '16:9'
+            
+            // Rating text style
+            'rating_font_size' => isset($_POST['rating_font_size']) ? intval($_POST['rating_font_size']) : 30,
+            'rating_text_color' => isset($_POST['rating_text_color']) ? sanitize_hex_color($_POST['rating_text_color']) : '#FFD700',
+            'rating_position_x' => isset($_POST['rating_position_x']) ? floatval($_POST['rating_position_x']) : 0,
+            'rating_position_y' => isset($_POST['rating_position_y']) ? floatval($_POST['rating_position_y']) : 0.3,
+            
+            // Review text style
+            'review_font_size' => isset($_POST['review_font_size']) ? intval($_POST['review_font_size']) : 30,
+            'review_text_color' => isset($_POST['review_text_color']) ? sanitize_hex_color($_POST['review_text_color']) : '#FFFFFF',
+            'review_position_x' => isset($_POST['review_position_x']) ? floatval($_POST['review_position_x']) : 0,
+            'review_position_y' => isset($_POST['review_position_y']) ? floatval($_POST['review_position_y']) : 0,
+            
+            // Reviewer text style
+            'reviewer_font_size' => isset($_POST['reviewer_font_size']) ? intval($_POST['reviewer_font_size']) : 30,
+            'reviewer_text_color' => isset($_POST['reviewer_text_color']) ? sanitize_hex_color($_POST['reviewer_text_color']) : '#FFFFFF',
+            'reviewer_position_x' => isset($_POST['reviewer_position_x']) ? floatval($_POST['reviewer_position_x']) : 0,
+            'reviewer_position_y' => isset($_POST['reviewer_position_y']) ? floatval($_POST['reviewer_position_y']) : -0.3
         );
         
         // Log the font size and background video URL for debugging
@@ -274,6 +294,13 @@ class Reviews_Video_Generator_Admin {
                 'please_wait' => __('Please wait...', 'reviews-video-generator')
             )
         ));
+        
+        // Check if we're on the create video page
+        $screen = get_current_screen();
+        if ($screen && $screen->id === 'reviews-video-generator_page_reviews-video-generator-create-video') {
+            // Enqueue the preview script only on the create video page
+            wp_enqueue_script($this->plugin_name . '-preview', plugin_dir_url(dirname(__FILE__)) . 'admin/js/reviews-video-generator-preview.js', array('jquery'), $this->version, true);
+        }
     }
 
     /**

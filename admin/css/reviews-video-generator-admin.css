@@ -171,6 +171,27 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: sticky;
+    top: 50px;
+    z-index: 100;
+    align-self: flex-start;
+    height: fit-content;
+}
+
+/* Sticky preview container */
+.rvg-sticky-preview {
+    background: #f0f0f0;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    width: 100%;
+    max-width: 500px;
+}
+
+.rvg-create-video-container {
+    display: flex;
+    gap: 30px;
 }
 
 .rvg-background-video-grid {
