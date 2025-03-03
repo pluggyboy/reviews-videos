@@ -317,11 +317,15 @@
     
     .rvg-video-container {
         padding: 20px;
+        max-height: 500px;
+        overflow: hidden;
     }
     
     .rvg-video-container video {
         width: 100%;
+        max-height: 500px;
         display: block;
+        object-fit: contain;
     }
     
     .rvg-modal-actions {

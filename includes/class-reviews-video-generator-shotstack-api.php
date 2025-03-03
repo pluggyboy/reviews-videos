@@ -371,8 +371,32 @@ class Reviews_Video_Generator_Shotstack_API {
         // Set dimensions based on aspect ratio
         $dimensions = $this->get_dimensions_from_aspect_ratio($aspect_ratio);
         
-        // Prepare the star rating text
-        $star_rating = str_repeat('★', $rating) . str_repeat('☆', 5 - $rating);
+        // Prepare the star rating text - use a numeric representation instead of Unicode stars
+        $star_rating = $rating . '/5 Rating';
+        
+        // Set output dimensions based on aspect ratio
+        $output_dimensions = array();
+        switch ($aspect_ratio) {
+            case '1:1':
+                $output_dimensions = array(
+                    'width' => 720,
+                    'height' => 720
+                );
+                break;
+            case '9:16':
+                $output_dimensions = array(
+                    'width' => 720,
+                    'height' => 1280
+                );
+                break;
+            case '16:9':
+            default:
+                $output_dimensions = array(
+                    'width' => 1280,
+                    'height' => 720
+                );
+                break;
+        }
         
         // Create the edit object using the structure from the working example
         $edit = array(
@@ -392,7 +416,7 @@ class Reviews_Video_Generator_Shotstack_API {
                                     'type' => 'text',
                                     'text' => '"' . $review_text . '"',
                                     'font' => array(
-                                        'family' => 'Clear Sans',
+                                        'family' => 'Arial',
                                         'color' => $text_color,
                                         'size' => 70
                                     ),
@@ -427,7 +451,7 @@ class Reviews_Video_Generator_Shotstack_API {
                                     'type' => 'text',
                                     'text' => $star_rating,
                                     'font' => array(
-                                        'family' => 'Clear Sans',
+                                        'family' => 'Arial',
                                         'color' => '#FFD700',
                                         'size' => 60
                                     ),
@@ -462,7 +486,7 @@ class Reviews_Video_Generator_Shotstack_API {
                                     'type' => 'text',
                                     'text' => '- ' . $author_name,
                                     'font' => array(
-                                        'family' => 'Clear Sans',
+                                        'family' => 'Arial',
                                         'color' => $text_color,
                                         'size' => 50
                                     ),
@@ -516,10 +540,7 @@ class Reviews_Video_Generator_Shotstack_API {
             'output' => array(
                 'format' => 'mp4',
                 'fps' => 30,
-                'size' => array(
-                    'width' => 1280,
-                    'height' => 720
-                )
+                'size' => $output_dimensions
             )
         );
         

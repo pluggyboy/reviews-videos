@@ -602,11 +602,15 @@
     
     .rvg-video-container {
         margin: 20px 0;
+        max-height: 500px;
+        overflow: hidden;
     }
     
     .rvg-video-container video {
         width: 100%;
+        max-height: 500px;
         border-radius: 5px;
+        object-fit: contain;
     }
     
     .rvg-modal-actions {
